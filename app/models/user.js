@@ -17,9 +17,6 @@ var UserSchema = new Schema({
 
 UserSchema.pre('save', function (next) {
   var user = this;
-  // only hash the password if its new or updated
-
-    // hash the pw pleb
   bcrypt.hash(user.password, null, null, function (err, hash) {
     if (err) {
       console.log('error in hashing');
@@ -37,8 +34,7 @@ UserSchema.methods.comparePassword = function (candidatePassword, cb) {
       cb(err, null);
     } else {
       cb(null, isMatch);
-    }
-    
+    }  
   });
 };
 module.exports = mongoose.model('User', UserSchema);
