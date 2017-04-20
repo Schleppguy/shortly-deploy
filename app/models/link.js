@@ -8,7 +8,7 @@ var LinkSchema = new Schema({
     base_url: String,
     code: String,
     title: String,
-    visits: Number
+    visits: {type: Number, default: 0 }
 });
 
 LinkSchema.pre('save', function (next) {
