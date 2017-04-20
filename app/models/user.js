@@ -1,36 +1,46 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 var bcrypt = require('bcrypt-nodejs');
-
 var UserSchema = new Schema({
-    username: { 
-      type: String, 
-      required: true, 
-      index: { 
-        unique: true 
-      } 
-    },
-    password: { 
-      type: String, 
-      required: true 
-    }
+  username: { 
+    type: String, 
+    required: true, 
+    index: { 
+      unique: true 
+    } 
+  },
+  password: { 
+    type: String, 
+    required: true 
+  }
 });
 
-UserSchema.pre('save', function(next) {
+UserSchema.pre('save', function (next) {
   var user = this;
-  if (!user.isModified('password')) return next();
-  bcrypt.hash(user.password, null, function(err, hash) {
-    if (err) return next(err);
+  // only hash the password if its new or updated
+  if (!user.isModified('password')) {
+    return next();
+  }
+    // hash the pw pleb
+  bcrypt.hash(user.password, null, null, function (err, hash) {
+    if (err) {
+      console.log('error in hashing');
+      return next(err);
+    } else {
       user.password = hash;
       next();
+    }
   });
 });
 
-UserSchema.methods.comparePassword = function(supplied, cb) {
-    bcrypt.compare(supplied, this.password, function(err, isMatch) {
-        if (err) return cb(err);
-        cb(null, isMatch);
-    });
+UserSchema.methods.comparePassword = function (candidatePassword, cb) {
+  bcrypt.compare(candidatePassword, this.password, function (err, isMatch) {
+    if (err) {
+      return cb(err);
+    } else {
+      cb(null, isMatch);
+    }
+    
+  });
 };
-
 module.exports = mongoose.model('User', UserSchema);
