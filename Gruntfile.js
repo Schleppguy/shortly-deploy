@@ -25,7 +25,11 @@ module.exports = function(grunt) {
 
     eslint: {
       target: [
-        // Add list of files to lint here
+        'public/client/**/*.js',
+        'lib/**/*.js',
+        'app/**/*.js',
+        './*.js',
+        'spec/**/*.js'
       ]
     },
 
